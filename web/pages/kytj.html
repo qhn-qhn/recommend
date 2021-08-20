@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>考研推荐</title>
+    <link rel="stylesheet" href="../dist/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/news.css" media="all">
+    <link rel="stylesheet" href="../css/yz.css" media="all">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../dist/layui/layui.js"></script>
+</head>
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 学校搜索
+</div>
+<div style="text-align: center; font-weight: bolder">
+    <div style="font-size: 40px">学校搜索</div>
+</div>
+
+<div id="question1" style="margin: auto; text-align: center; margin-top: 20px;background-color: white">
+    <div style="font-size: 30px">1、请选择您考虑的院校地区</div>
+    <br>
+
+<!--    <button type="button" class="layui-btn layui-btn-lg layui-btn-normal q1" id="q1a">A类地区</button>&nbsp;&nbsp;-->
+    <button type="button" class=" q1" id="q1a">A类地区</button>&nbsp;&nbsp;
+<!--    <button type="button" class="layui-btn layui-btn-lg layui-btn-normal q1" id="q1b">B类地区</button>-->
+    <button type="button" class="q1" id="q1b">B类地区</button>
+</div>
+<div id="question2" style="margin: auto; text-align: center; margin-top: 20px;display: none">
+    <div style="font-size: 30px">2、请选择您报考的硕士类型</div>
+    <br>
+    <button type="button" class=" q2" id="q2a">学术型硕士</button>&nbsp;&nbsp;
+    <button type="button" class=" q2" id="q2b">专业型硕士</button>
+<!--    <button type="button" class="layui-btn layui-btn-lg layui-btn-normal q2" id="q2a">学术型硕士</button>&nbsp;&nbsp;-->
+<!--    <button type="button" class="layui-btn layui-btn-lg layui-btn-normal q2" id="q2b">专业型硕士</button>-->
+</div>
+<div id="question3" style="margin: auto; text-align: center; margin-top: 20px; display: none">
+    <div style="font-size: 30px">3、请输入你要报考的专业名称或代码</div>
+    <br>
+    <div class="layui-form-item">
+    <div class="layui-input-block" style="margin: auto; text-align: center">
+      <input type="text" name="title" id="in" required  lay-verify="required" placeholder="请输入专业名称或代码" autocomplete="off" class="layui-input" style="width: 50%; margin: auto">
+        <br>
+    </div>
+<!--    <button type="button" class="layui-btn layui-btn-lg layui-btn-normal q3" id="q3">开始推荐</button>-->
+    <button type="button" class="q3" id="q3">开始搜索</button>
+</div>
+</div>
+<div id="res" style="display: none; margin: auto; text-align: center">
+    <div style="font-size: 30px;font-weight: bolder">院校推荐结果展示</div>
+    <div class="tab-container zyk-zyfb-tab" style="width: 900px; margin: auto">
+                    <div class="ch-tab clearfix">
+
+<!--                            <div class="tab-item selected">-->
+<!--                                <a href="/zyk/specialityDetail.do?zymc=%e5%93%b2%e5%ad%a6&amp;zydm=010100&amp;ccdm=30&amp;cckey=10&amp;ssdm=&amp;method=distribution#zyk-zyfb">全国(25)</a>-->
+<!--                            </div>-->
+
+                    </div>
+                    <div class="tab-content">
+                        <div class="item-content active">
+                            <ul class="clearfix" id="resul">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+</div>
+
+</body>
+<script>
+    var res1 = ''
+    var res2 = ''
+    var res3 = ''
+    var useri = sessionStorage.id
+    $(".q1").click(function () {
+        res1 += $(this).html()
+        $("#question1").css("display","none")
+        $("#question2").css("display","block")
+    })
+    $(".q2").click(function () {
+        res2 += $(this).html()
+        $("#question2").css("display","none")
+        $("#question3").css("display","block")
+    })
+    $(".q3").click(function () {
+        res3 += $("#in").val()
+        $("#question3").css("display","none")
+        //业务处理
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/search",
+            dataType: 'json',
+            data: {'r1':res1,'r2':res2,'r3':res3,'id':useri},
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                console.log(data)
+                $("#resul").html('')
+                if (data['response_status']==true){
+                    var d = data['response_body'];
+                console.log(d)
+                for (var i=0;i<d.length;i++){
+                    $("#resul").append("<li title=\""+d[i]['school']+"\">\n" +
+                        "                                         "+d[i]['school']+"\n" +
+                        "                                    </li>")
+                }
+                }else {
+                    $("#resul").html("暂无查询结果");
+                }
+
+
+            }
+            })
+        $("#res").css("display","block")
+    })
+
+</script>
+</html>

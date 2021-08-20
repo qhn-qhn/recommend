@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学习交流</title>
+    <link rel="stylesheet" href="../dist/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/news.css" media="all">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../dist/layui/layui.js"></script>
+    <style>
+        html,
+        body {
+            background-color: #f0f2fa;
+            font-family: "PT Sans", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
+            color: #555f77;
+            -webkit-font-smoothing: antialiased;
+        }
+        input,
+        textarea {
+            outline: none;
+            border: none;
+            display: block;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            font-family: "PT Sans", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
+            font-size: 1rem;
+            color: #555f77;
+        }
+        input::-webkit-input-placeholder,
+        textarea::-webkit-input-placeholder {
+            color: #ced2db;
+        }
+        input::-moz-placeholder,
+        textarea::-moz-placeholder {
+            color: #ced2db;
+        }
+        input:-moz-placeholder,
+        textarea:-moz-placeholder {
+            color: #ced2db;
+        }
+        input:-ms-input-placeholder,
+        textarea:-ms-input-placeholder {
+            color: #ced2db;
+        }
+        p {
+            line-height: 1.3125rem;
+        }
+        .comments {
+            margin: 2.5rem auto 0;
+            max-width: 60.75rem;
+            padding: 0 1.25rem;
+        }
+        .comment-wrap {
+            margin-bottom: 1.25rem;
+            display: table;
+            width: 100%;
+            min-height: 5.3125rem;
+        }
+        .photo {
+            padding-top: 0.625rem;
+            display: table-cell;
+            width: 3.5rem;
+        }
+        .photo .avatar {
+            height: 2.25rem;
+            width: 2.25rem;
+            border-radius: 50%;
+            background-size: contain;
+        }
+        .comment-block {
+            padding: 1rem;
+            background-color: #fff;
+            display: table-cell;
+            vertical-align: top;
+            border-radius: 0.1875rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08);
+        }
+        .comment-block textarea {
+            width: 100%;
+            max-width: 100%;
+        }
+        .comment-text {
+            margin-bottom: 1.25rem;
+        }
+        .bottom-comment {
+            color: #acb4c2;
+            font-size: 0.875rem;
+        }
+        .comment-date {
+            float: left;
+        }
+        .comment-actions {
+            float: right;
+        }
+        .comment-actions li {
+            display: inline;
+        }
+        .comment-actions li.complain {
+            padding-right: 0.625rem;
+            border-right: 1px solid #e1e5eb;
+        }
+        .comment-actions li.reply {
+            padding-left: 0.625rem;
+        }
+    </style>
+</head>
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 学习交流
+</div>
+<div style="margin: 20px">
+    <div class="comments">
+
+    <div class="comment-wrap">
+        <div class="photo">
+            <div class="avatar" style=""></div>
+        </div>
+        <div class="comment-block">
+            <form action="">
+                <textarea name="" id="cont" cols="30" rows="3" placeholder="说点什么吧！"></textarea>
+            </form>
+        </div>
+
+    </div>
+    <div style="float: right; margin-bottom: 30px">
+            <button type="button" class="layui-btn" id="comment">评论</button>
+    </div>
+    <!--    展示所有评论    -->
+     <div id="comments">
+
+ </div>
+</div>
+</div>
+<script>
+    var useri = sessionStorage.id
+    function showcomment() {
+        var data = {useri: useri,content:$("#cont").val()};
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/showcomment",
+            // data: {'content': $("#cont").val()},
+            data: data,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                // console.log(data)
+                $("#comments").html('')
+                for (var i=0;i<data['response_body'].length;i++){
+                    var j = data['response_body'][i]['id'];
+                    var c = data['response_body'][i]['content'];
+                    var t = data['response_body'][i]['time'];
+                    // console.log(j)
+                    // console.log(c)
+                    // console.log(t)
+                    $("#comments").append("<div class=\"comment-wrap\">\n" +
+                        "        <div class=\"photo\">\n" +
+                        "            <div class=\"avatar\" style=\"background-image: url('../img/qq.jpeg')\"></div>\n" +
+                        "              <p>"+j+"</p>"+
+                        "        </div>\n" +
+                        "        <div class=\"comment-block\">\n" +
+                        "            <p class=\"comment-text\">"+c+"</p>\n" +
+                        "            <div class=\"bottom-comment\">\n" +
+                        "                <div class=\"comment-date\">"+t+"</div>\n" +
+                        "                <ul class=\"comment-actions\">\n" +
+                        "                    <li class=\"complain\">Complain</li>\n" +
+                        "                    <li class=\"reply\">Reply</li>\n" +
+                        "                </ul>\n" +
+                        "            </div>\n" +
+                        "        </div>\n" +
+                        "    </div>");
+                }
+            }
+        });
+    }
+    showcomment();
+    $("#comment").click(function () {
+        var data = {useri: useri,content:$("#cont").val()};
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/addcomment",
+            // data: {'content': $("#cont").val()},
+            data: data,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                if (data['response_status']==true){
+                    layer.msg('评论成功');
+                    showcomment();
+                }
+            },
+            error: function() {
+                alert("评论失败");
+            }
+        });
+
+    })
+</script>
+</body>
+</html>

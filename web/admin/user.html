@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+    #table{
+            padding-left: 20px;
+        }
+    td{
+        font-size: 20px;
+    }
+    </style>
+</head>
+
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 修改信息
+</div>
+
+<div id="table">
+    <button id="add">添加</button>
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <colgroup>
+    <col width="150">
+    <col width="200">
+    <col>
+  </colgroup>
+  <thead>
+    <tr>
+      <th id="del">账号</th>
+      <th>昵称</th>
+      <th>手机</th>
+      <th>邮箱</th>
+      <th>意向地区</th>
+      <th>意向院校类型</th>
+    </tr>
+  </thead>
+  <tbody id="tbody">
+
+  </tbody>
+</table>
+</div>
+</body>
+
+</html>
+<script src="../dist/layui/layui.js"></script>
+<script>
+    window.onload=function () {
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/alluser",
+            data: {},
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                var tbody = document.getElementById('tbody')
+                var json = data.response_body[0]['data']
+                var j = json.length
+
+                for(var i = 0; i<j; i++){
+                    console.log(json[i])
+                    row=getDataRow(json[i])
+                    tbody.appendChild(row);
+
+                }},
+            error: function () {
+
+            }
+        });
+
+    };
+    function getDataRow(json){
+        var k = json.length
+        var row = document.createElement('tr'); //创建行
+        for(var m=0;m<k;m++) {
+            if (m != 2 && m != 7) {
+                var idCell = document.createElement('td'); //创建第一列id
+                idCell.innerHTML = json[m];
+                row.appendChild(idCell);
+                console.log(row)
+            }
+        }
+        var change = document.createElement('td')
+        var delCell = document.createElement('td');//创建第四列，操作列
+        row.appendChild(change);
+        row.appendChild(delCell);
+        var changed = document.createElement('input')
+        var btnDel = document.createElement('input'); //创建一个input控件
+        btnDel.setAttribute('type','button'); //type="button"
+        btnDel.setAttribute('value','删除');
+        changed.setAttribute('type','button');
+        changed.setAttribute('value','修改');
+        change.appendChild(changed);
+        delCell.appendChild(btnDel);
+        changed.onclick=function (){
+            var s=[]
+            for (var a=0;a<json.length;a++){
+                s[a]=json[a]
+            }
+            location.href='change.html?'+'txt=' + encodeURI(s)
+            // window.location.href="change.html"
+            // changes(json[0])
+        }
+        btnDel.onclick=function(){
+            del(json[0])
+            if(confirm("确定删除这一行嘛？")){
+                //找到按钮所在行的节点，然后删掉这一行
+                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+       }
+     }
+        return row
+    }
+    var del = function (id){
+        console.log(id)
+        data = {id:id}
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/deluser",
+            data: data,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                console.log(data)
+            }
+        })
+    }
+    // var changes = function (id){
+    //
+    // }
+    var add = document.getElementById("add");
+    add.onclick = function (){
+        window.location.href = 'adds.html'
+    }
+    // var del = document.getElementById("del")
+    // del.onclick=function (){
+    //     alert(1111)
+    // }
+</script>

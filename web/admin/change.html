@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        div.dlg {
+            width: 680px;
+            height: 400px;
+            position: absolute;
+            margin-left: -334px;
+            margin-top: -200px;
+            top: 50%;
+            left: 50%;
+            display: block;
+            z-index: 2000;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        div.header {
+            box-sizing: border-box;
+            height: 50px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 10px 2px 30px;
+        }
+        .main {
+            width: 100%;
+            height: 458px;
+            padding: 20px;
+
+        }
+
+        img {
+            width: 110px !important;
+            height: 111px !important;
+            border: 1px solid #ccc;
+            margin: 0 15px 20px 0;;
+            float: left;
+        }
+
+        img#imgUpload {
+            cursor: pointer
+        }
+
+        .footer {
+            width: 100%;
+            height: 50px;
+            margin-top: -250px;
+            /* border-top: 1px solid #ccc; */
+        }
+
+        .btn-gp {
+            width: 150px;
+            margin: 0 auto;
+            margin-top: 42px;
+        }
+
+        .btn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 修改信息
+</div>
+<div class="dlg">
+    <div class="header">
+        <div class="Title">
+            <span style="font:bolder">修改信息</span>
+        </div>
+    </div>
+    <div class="main" id="main" style="text-align: center;margin-top: 30px;">
+        <div style="margin-bottom: 10px">账号：<input id="id" type="text" disabled=“disabled”></div>
+        <div style="margin-bottom: 10px">昵称：<input id="username" type="text"></div>
+        <div style="margin-bottom: 10px">密码：<input id="password" type="password"></div>
+        <div style="margin-bottom: 10px">手机：<input id="phone" type="text"></div>
+        <div style="margin-bottom: 10px">邮箱：<input id="email" type="text"></div>
+        <div style="margin-bottom: 10px">意向地区：<input id="schoolname" type="text"></div>
+        <div style="margin-bottom: 10px">意向院校类型：<input id="schoolmajor" type="text"></div>
+    </div>
+    <div class="footer">
+        <div class="btn-gp" style="text-align: center">
+            <button class="btn " id="submit">修改</button>
+             <button class="btn " id="re">返回</button>
+        </div>
+    </div>
+</div>
+<script>
+    window.onload = function () {
+        // var main = document.getElementById('main');
+        var loc = location.href;
+        var n1 = loc.length;
+        var n2 = loc.indexOf('=');
+        console.log(typeof (loc.substr(n2 + 1, n1 - n2)))
+        var txts = decodeURI(loc.substr(n2 + 1, n1 - n2));
+        var txt = txts.split(',')
+        var useri = sessionStorage.id
+        var data = {useri: useri};
+        // $.ajax({
+        //     type: "POST",
+        //     url: "http://127.0.0.1:1005/userinfo",
+        //     data: data,
+        //     dataType: 'json',
+        //     headers: {
+        //         "Content-Type": "application/x-www-form-urlencoded"
+        //     },
+        //     success: function (data) {
+                $("#id").attr("value", txt[0]);
+                $("#username").attr("value", txt[1]);
+                $("#password").attr("value", txt[2]);
+                $("#phone").attr("value", txt[3]);
+                $("#email").attr("value", txt[4]);
+                $("#schoolname").attr("value", txt[5]);
+                $("#schoolmajor").attr("value", txt[6]);
+                // console.log(data.response_body[0]['data'][0])
+            // },
+            // error: function () {
+            //     alert("登录失败，请重试！");
+            // }
+        // });
+    };
+    $("#submit").click(function () {
+        var id = $.trim($("#id").val());
+        var username = $.trim($("#username").val());
+        var password = $.trim($("#password").val());
+        var phone = $.trim($("#phone").val());
+        var email = $.trim($("#email").val());
+        var schoolname = $.trim($("#schoolname").val());
+        var schoolmajor = $.trim($("#schoolmajor").val());
+        if (username == "") {
+            alert("请输入用户名");
+            return false;
+        } else if (password == "") {
+            alert("请输入密码");
+            return false;
+        }
+        //ajax去服务器端校验
+        var data = {
+            id: id,
+            username: username,
+            password: password,
+            phone: phone,
+            email: email,
+            schoolname: schoolname,
+            schoolmajor: schoolmajor
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/change",
+            data: data,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                //alert(msg);
+                if (data.response_status == true) {
+                    alert("修改成功");
+                    window.location.href='user.html'
+                } else {
+                    alert("修改失败，请重试!");
+                }
+            },
+            error: function () {
+                alert("修改失败，请重试！");
+            }
+        });
+    });
+
+     $("#re").click(function () {
+         window.location.href='user.html'
+     })
+
+</script>
+</body>
+
+</html>

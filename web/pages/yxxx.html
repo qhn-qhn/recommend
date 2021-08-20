@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>院校信息</title>
+		<link rel="stylesheet" type="text/css" href="../dist/layui/css/layui.css"/>
+		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	</head>
+	<body>
+	<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 院校信息
+</div>
+		<div id="test" lay-filter="test" style="margin: 20px"></div>
+	<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+
+<!--    <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>-->
+<!--    <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>-->
+  </div>
+</script>
+
+<script type="text/html" id="barDemo">
+<!--  <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+<!--  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>-->
+</script>
+	</body>
+</html>
+<script src="../dist/layui/layui.js"></script>
+<script>
+	layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+			method:'post',
+            elem: '#test',
+            height: 700,
+            limit: 20,
+            url:'http://127.0.0.1:1005/showschool',
+            cellMinWidth: 80, //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+			toolbar: '#toolbarDemo', //开启头部工具栏，并为其绑定左侧模板
+			defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+			  title: '提示',
+			  layEvent: 'LAYTABLE_TIPS',
+			  icon: 'layui-icon-tips'
+			}],
+            cols: [[
+				// {field:'id', width:100, title: '编号', sort: true},
+				{field:'name', width:200, title: '院校名称', sort: true},
+                {field:'school_type', width:120, title: '院校类型', sort: true},
+				{field:'location', width:100, title: '地点', sort: true},
+                {field:'location_type', width:100, title: '地区', sort: true},
+                {field:'belong', width:220, title: '隶属机构', sort: true},
+                {field:'yjsy', width:170, title: '研究生院', sort: true},
+                {field:'self_line', width:170, title: '自划线', sort: true}
+
+            ]],
+            page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+              layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+              //,curr: 5 //设定初始在第 5 页
+              ,groups: 5 //只显示 1 个连续页码
+              ,first: false //不显示首页
+              ,last: false //不显示尾页
+
+    }
+            // request:{
+            //     pageName: 'page', //页码的参数名称，默认：page
+            //     limitName: 'limit' //每页数据量的参数名，默认：limit
+            // }
+            // 用于对返回的数据格式的自定义，如：
+            // ,response: {
+            //     statusName: 'succ', //数据状态的字段名称，默认：code
+            //     statusCode: 0, //成功的状态码，默认：0
+            //     msgName: 'msg', //状态信息的字段名称，默认：msg
+            //     countName: 'totalSize', //数据总数的字段名称，默认：count
+            //     dataName: 'list' //数据列表的字段名称，默认：data
+            // }
+        });
+        //监听行工具事件
+	  // table.on('tool(test)', function(obj){
+		// var data = obj.data;
+		// //console.log(obj)
+		// if(obj.event === 'del'){
+		//   layer.confirm('真的删除行么', function(index){
+		// 	obj.del();
+		// 	$.ajax({
+		// 		  type : "post",
+		// 		  url : "http://127.0.0.1:1005/delete?id=" + data.id,
+		// 		  dataType : "json"
+		// 	});
+		// 	layer.close(index);
+		//   });
+		// } else if(obj.event === 'edit'){
+		//   layer.prompt({
+		// 	formType: 2
+		// 	,value: data.email
+		//   }, function(value, index){
+		// 	obj.update({
+		// 	  email: value
+		// 	});
+		// 	layer.close(index);
+		//   });
+		// }
+	  // });
+   });
+
+</script>

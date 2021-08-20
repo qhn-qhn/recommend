@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>考研辅助系统</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        div.dlg {
+            width: 680px;
+            height: 400px;
+            position: absolute;
+            margin-left: -334px;
+            margin-top: -200px;
+            top: 50%;
+            left: 50%;
+            display: block;
+            z-index: 2000;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        div.header {
+            box-sizing: border-box;
+            height: 50px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 10px 2px 30px;
+        }
+        .main {
+            width: 100%;
+            height: 458px;
+            padding: 20px;
+
+        }
+        img {
+            width: 110px !important;
+            height: 111px !important;
+            border: 1px solid #ccc;
+            margin: 0 15px 20px 0;
+        ;
+            float: left;
+        }
+        img#imgUpload {
+            cursor: pointer
+        }
+        .footer {
+            width: 100%;
+            height: 50px;
+            margin-top: -250px;
+            /* border-top: 1px solid #ccc; */
+        }
+        .btn-gp {
+            width: 150px;
+            margin: 0 auto;
+            margin-top:70px;
+        }
+    </style>
+</head>
+
+<body>
+<h1 style="font:bolder;text-align: center">考研辅助系统</h1>
+<div class="dlg">
+    <div class="header">
+            <div >
+            <span style="font:bolder">用户注册</span>
+        </div>
+    </div>
+    <div class="main" id="main" style="text-align: center;margin-top: 30px;">
+        <div style="margin-bottom: 10px">账号：<input id="id" type="text"></div>
+        <div style="margin-bottom: 10px">昵称：<input id="username" type="text"></div>
+        <div style="margin-bottom: 10px">密码：<input id="password" type="password"></div>
+        <div style="margin-bottom: 10px">手机：<input id="phone" type="text"></div>
+        <div style="margin-bottom: 10px">邮箱：<input id="email" type="text"></div>
+        <div style="margin-bottom: 10px">意向地区：
+            <select style='width: 180px' id="lo">
+                <option value ="A">A</option>
+                <option value ="B">B</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 10px">意向院校类型：
+            <select id="schty" style='width: 180px'>
+                <option value ="985&211">985</option>
+                <option value ="211">211</option>
+                <option value ="nan">普通院校</option>
+            </select>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="btn-gp" style="text-align: center">
+            <button  id="submit">确认</button>
+            <a href="login.html"><button  id="ret">返回</button></a>
+        </div>
+    </div>
+</div>
+<script>
+    $("#submit").click(function(){
+        var option=$("#lo option:selected")
+        var options=$("#schty option:selected")
+        var id = $.trim($("#id").val());
+        var username = $.trim($("#username").val());
+        var password = $.trim($("#password").val());
+        var phone = $.trim($("#phone").val());
+        var email = $.trim($("#email").val());
+        var schoolname = option.val();
+        var schoolmajor = options.val()
+        if(username == ""){
+            alert("请输入用户名");
+            return false;
+        }else if(password == ""){
+            alert("请输入密码");
+            return false;
+        }
+        //ajax去服务器端校验
+        var data= {id:id,username:username,password:password,phone:phone,email:email,schoolname:schoolname,schoolmajor:schoolmajor};
+
+        $.ajax({
+            type:"POST",
+            url:"http://127.0.0.1:1005/regist",
+            data:data,
+            dataType:'json',
+            headers:{
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success:function(data){
+                //alert(msg);
+                if(data.response_status==true){
+                    ids = {id:id}
+                    alert("注册成功");
+                    window.location.href = "login.html";
+                    $.ajax({
+                        type: "POST",
+                        url: "http://127.0.0.1:1005/initrec",
+                        data: ids,
+                        dataType: 'json',
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
+                    })
+                }else{
+                    alert("注册失败，请重试!");
+                }
+            },
+            error: function() {
+                alert("注册失败，请重试！");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

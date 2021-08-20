@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>专业目录</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../dist/layui/css/layui.css" media="all">
+</head>
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 专业目录
+</div>
+<div style="margin: 20px">
+    <div class="layui-btn-container" style="margin-top: 20px">
+        <button class="layui-btn layui-btn-primary demo1" id="sel0">
+            <span id="s1">硕士类型</span>
+            <i class="layui-icon layui-icon-down layui-font-12"></i>
+        </button>
+        <button class="layui-btn layui-btn-primary demo1" id="sel1">
+            <span id="s2">一级专业名称</span>
+            <i class="layui-icon layui-icon-down layui-font-12"></i>
+        </button>
+        <button class="layui-btn layui-btn-primary demo1" id="sel2">
+            <span id="s3">二级专业名称</span>
+            <i class="layui-icon layui-icon-down layui-font-12"></i>
+        </button>
+        <button type="button" class="layui-btn" id="load">查询</button>
+
+    </div>
+</div>
+<div id="content">
+    <table id="demo" lay-filter="test"></table>
+</div>
+
+<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="../dist/layui/layui.js" charset="utf-8"></script>
+<script>
+    var sel1data = []
+    var sel2data = []
+    layui.use(['dropdown', 'util', 'layer'], function () {
+        var dropdown = layui.dropdown
+            , util = layui.util
+            , layer = layui.layer
+            , $ = layui.jquery;
+
+        dropdown.render({
+            elem: '#sel0'
+            , data: [{
+                title: '学术型硕士'
+                , id: 1
+            }, {
+                title: '专业型硕士'
+                , id: 2
+            }]
+            , click: function (obj) {
+                layer.tips('当前选择了：' + obj.title, this.elem, {tips: [1, '#5FB878']})
+                $("#s1").html(obj.title);
+                if (obj.title == '学术型硕士') {
+                    // alert('xs')
+                    sel1data = [
+                        {title: '哲学', id: 1},
+                        {title: '经济学', id: 2},
+                        {title: '法学', id: 3},
+                        {title: '教育学', id: 4},
+                        {title: '文学', id: 5},
+                        {title: '历史学', id: 6},
+                        {title: '理学', id: 7},
+                        {title: '工学', id: 8},
+                        {title: '农学', id: 9},
+                        {title: '医学', id: 10},
+                        {title: '军事学', id: 11},
+                        {title: '管理学', id: 12},
+                        {title: '艺术学', id: 13}
+                    ]
+                } else {
+                    // alert('zs')
+                    sel1data = [
+                        {title: '经济学', id: 1},
+                        {title: '法学', id: 2},
+                        {title: '教育学', id: 3},
+                        {title: '文学', id: 4},
+                        {title: '历史学', id: 5},
+                        {title: '工学', id: 6},
+                        {title: '农学', id: 7},
+                        {title: '医学', id: 8},
+                        {title: '军事学', id: 9},
+                        {title: '管理学', id: 10},
+                        {title: '艺术学', id: 11}
+                    ]
+                }
+                layui.use(['dropdown', 'util', 'layer'], function () {
+                    var dropdown = layui.dropdown
+                        , util = layui.util
+                        , layer = layui.layer
+                        , $ = layui.jquery;
+
+                    //sel1
+                    dropdown.render({
+                        elem: '#sel1'
+                        , data: sel1data
+                        , show: true
+                        , isSpreadItem: false
+                        , click: function (obj) {
+                            layer.tips('当前选择了：' + obj.title, this.elem, {tips: [1, '#5FB878']})
+                            $("#s2").html(obj.title);
+
+                            $.ajax({
+                                type: "POST",
+                                url: "http://127.0.0.1:1005/getitem",
+                                data: {'lx': $("#s1").html(), 'first': $("#s2").html()},
+                                dataType: 'json',
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                success: function (data) {
+                                    sel2data = data['response_body']
+                                    console.log(sel2data)
+                                    layui.use(['dropdown', 'util', 'layer'], function () {
+                                        var dropdown = layui.dropdown
+                                            , util = layui.util
+                                            , layer = layui.layer
+                                            , $ = layui.jquery;
+
+                                        //sel2
+                                        dropdown.render({
+                                            elem: '#sel2'
+                                            , data: sel2data
+                                            , show: true
+                                            // ,data: tdata
+                                            , click: function (obj) {
+                                                layer.tips('当前选择了：' + obj.title, this.elem, {tips: [1, '#5FB878']});
+                                                $("#s3").html(obj.title);
+
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+
+
+                        }
+                    });
+                });
+            }
+
+        });
+    });
+    $('#load').click(function () {
+
+        layui.use('table', function () {
+            var table = layui.table;
+            //table
+            table.render({
+                elem: '#demo'
+                ,
+                height: 600
+                ,
+                weight: 600
+                ,
+                url: 'http://127.0.0.1:1005/showmajor?lx=' + $("#s1").html() + '&first=' + $("#s2").html() + '&second=' + $("#s3").html()//数据接口
+                ,
+                page: true //开启分页
+                ,
+                cols: [[ //表头
+                    {field: 'lx', title: '硕士类型', width: 200, sort: true}
+                    , {field: 'first', title: '一级专业', width: 200, sort: true}
+                    , {field: 'second', title: '二级专业', width: 200, sort: true}
+                    , {field: 'name', title: '专业名称', width: 200, sort: true}
+                    , {field: 'code', title: '专业代码', width: 180, sort: true}
+                ]]
+            });
+        })
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>考研辅助系统</title>
+    <link rel="stylesheet" href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        div.dlg {
+            width: 680px;
+            height: 258px;
+            position: absolute;
+            margin-left: -334px;
+            margin-top: -250px;
+            top: 50%;
+            left: 50%;
+            display: block;
+            z-index: 2000;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        div.header {
+            box-sizing: border-box;
+            height: 50px;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 10px 2px 30px;
+        }
+        .main {
+            width: 100%;
+            height: 458px;
+            padding: 20px;
+        }
+        img {
+            width: 110px !important;
+            height: 111px !important;
+            border: 1px solid #ccc;
+            margin: 0 15px 20px 0;
+        ;
+            float: left;
+        }
+        img#imgUpload {
+            cursor: pointer
+        }
+        .footer {
+            width: 100%;
+            height: 50px;
+            margin-top: -350px;
+            /* border-top: 1px solid #ccc; */
+        }
+        .btn-gp {
+            width: 150px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+<h1 style="font-weight:bolder;text-align: center; margin-bottom: 20px">考研辅助系统</h1>
+<div class="dlg">
+    <div class="header">
+        <div >
+            <span style="font:bolder">用户登录</span>
+        </div>
+    </div>
+    <div class="main" id="main" style="text-align: center;margin-top: 30px;">
+        <div style="margin-bottom: 10px">账号：<input id="id" type="text"></div>
+        <div style="margin-bottom: 10px">密码：<input id="password" type="password"></div>
+    </div>
+    <div class="footer">
+        <div class="btn-gp" style="text-align: center">
+            <button  id="submit">登录</button>
+            <a href="register.html"><button  id="cancel">注册</button></a>
+        </div>
+    </div>
+</div>
+<script>
+    $("#submit").click(function(){
+        var id = $.trim($("#id").val());
+        var password = $.trim($("#password").val());
+
+        sessionStorage.setItem("id", id);
+        if(id == ""){
+            alert("请输入用户名");
+            return false;
+        }else if(password == ""){
+            alert("请输入密码");
+            return false;
+        }
+        //ajax去服务器端校验
+        var data= {id:id,password:password};
+
+        $.ajax({
+            type:"POST",
+            url:"http://127.0.0.1:1005/login",
+            data:data,
+            dataType:'json',
+            headers:{
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success:function(data){
+                //alert(msg);
+                console.log(111)
+                console.log(data.response_body[0]['data'][7]);
+                if(data.response_status==true){
+                    // sessionStorage.setItem("id", id);
+                    if (data.response_body[0]['data'][7] != 1){
+                        window.location.href = "index.html";
+                        ids = {id:id}
+                        console.log(ids)
+                        console.log(id)
+                        $.ajax({
+                            type:"POST",
+                            url:"http://127.0.0.1:1005/yxtj",
+                            data:ids,
+                            dataType:'json',
+                            headers:{
+                                "Content-Type": "application/x-www-form-urlencoded"
+                             },
+                        })
+                    }else{
+                        window.location.href = "admin.html";
+                    }
+                }else{
+                    alert("登录失败，请重试!");
+                }
+            },
+            error: function() {
+                alert("登录失败，请重试！");
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

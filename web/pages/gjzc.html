@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>国家政策</title>
+    <link rel="stylesheet" href="../dist/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../css/news.css" media="all">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="../dist/layui/layui.js"></script>
+</head>
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 国家政策
+</div>
+<div class="layui-btn-container" style="margin: 20px">
+    <button type="button" data-method="offset" data-type="auto" class="layui-btn layui-btn-danger" id="refresh"><i
+            class="layui-icon">&#xe9aa;&nbsp刷新</i></button>
+</div>
+<div style="margin: 20px">
+    <ul class="news-list" id="newslist">
+
+
+    </ul>
+
+</div>
+<script>
+    function showdata() {
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/getnews",
+            data: {'lx': $("#s1").html(), 'first': $("#s2").html()},
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                d = data['response_body']
+                $("#newslist").html('')
+                for (var i = 0; i < d.length; i++) {
+                    $("#newslist").append("<li><span class=\"span-time\">" + d[i]['time'] + "</span>\n" +
+                        "<a target=\"_blank\" href=\"" + d[i]['href'] + "\">" + d[i]['title'] + "</a>\n" +
+                        "</li>")
+                }
+
+
+            }
+        });
+    }
+
+    showdata();
+    $("#refresh").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/refreashnews",
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+
+                if (data['response_status'] == true) {
+                    layer.msg('最新数据获取成功');
+                    showdata();
+                }
+            }
+        });
+
+    })
+
+</script>
+<!-- 条目中可以是任意内容，如：<img src=""> -->
+
+<script src="../dist/layui/layui.js"></script>
+<script>
+    layui.use('carousel', function () {
+        var carousel = layui.carousel;
+        //建造实例
+        carousel.render({
+            elem: '#test1'
+            , width: '490px' //设置容器宽度
+            , height: '260px'
+            , arrow: 'always' //始终显示箭头
+            //,anim: 'updown' //切换动画方式
+            , interval: '2200'
+        });
+    });
+</script>
+</body>
+</html>

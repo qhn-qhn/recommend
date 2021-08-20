@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <title>Title</title>
+    <style>
+        table{
+            text-align: center
+        }
+    </style>
+</head>
+<body>
+<div style="margin: 20px; font-weight: bolder">
+    当前位置：<a href="info.html">首页</a> > 考研推荐
+</div>
+<div style="text-align: center; font-weight: bolder;margin-bottom: 20px">
+    <div style="font-size: 40px" id="btnn">推荐院校</div>
+</div>
+<div style="font-size: 20px;margin-left: 30px"><button id="ref">刷新</button></div>
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+<tbody id="tbody"></tbody>
+</table>
+</body>
+</html>
+
+<script>
+    var ref = document.getElementById('ref');
+    ref.onclick=function (){
+        window.location.reload()
+        var useri = sessionStorage.id
+        var data = {useri: useri};
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/yxcx",
+            data: data,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                var tbody = document.getElementById('tbody')
+                var json = data.response_body[0]['data']
+                var j = json.length
+                for(var i = 0; i<j; i=i+4){
+                    var row = document.createElement('tr')
+                        for (k=i;k<i+4;k++) {
+                            if (json[k] != null){
+                                var idCell = document.createElement('td');
+                                idCell.innerHTML = json[k];
+                                row.appendChild(idCell);
+                                console.log(row)
+                            }
+
+                        }
+                    tbody.appendChild(row)
+                    // row=getDataRow(json[i])
+                    // tbody.appendChild(row);
+                }
+                // console.log(data.response_body[0]['data'])
+            },
+            error: function () {
+
+            }
+        });
+    }
+    window.onload = function (){
+        var useri = sessionStorage.id
+        var data = {useri: useri};
+        $.ajax({
+            type: "POST",
+            url: "http://127.0.0.1:1005/yxcx",
+            data: data,
+            dataType: 'json',
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            success: function (data) {
+                var tbody = document.getElementById('tbody')
+                var json = data.response_body[0]['data']
+                var j = json.length
+                for(var i = 0; i<j; i=i+4){
+                    var row = document.createElement('tr')
+                        for (k=i;k<i+4;k++) {
+                            if (json[k] != null){
+                                var idCell = document.createElement('td');
+                                idCell.innerHTML = json[k];
+                                row.appendChild(idCell);
+                                console.log(row)
+                            }
+
+                        }
+                    tbody.appendChild(row)
+                    // row=getDataRow(json[i])
+                    // tbody.appendChild(row);
+                }
+                // console.log(data.response_body[0]['data'])
+            },
+            error: function () {
+
+            }
+        });
+    }
+
+</script>
