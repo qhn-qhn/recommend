@@ -13,8 +13,11 @@ pycharm右下角点击<No interpreter>,点击add python interpreter;
 选择conda environment，点击interpreter，选择anaconda\envs\web\python.exe;
   
 在代码目录打开终端，输入pip install falsk -i https://pypi.tuna.tsinghua.edu.cn/simple some-package;
+  
 接着输入pip install pandas -i https://pypi.tuna.tsinghua.edu.cn/simple some-package;
+  
 接着输入pip install requests -i https://pypi.tuna.tsinghua.edu.cn/simple some-package;
+  
 接着输入pip install beautifulsoup4 -i https://pypi.tuna.tsinghua.edu.cn/simple some-package;
- 
- 配置完成后运行api.py,在相应的本地端口打开即可
+  
+配置完成后运行api.py,在相应的本地端口打开即可
